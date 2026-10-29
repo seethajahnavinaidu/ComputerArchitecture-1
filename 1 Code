@@ -1,0 +1,62 @@
+
+def to_8bit_binary(num):
+    """Convert a decimal integer to 8-bit 2's complement."""
+    return format(num & 0xFF, '08b')
+
+
+def signed_value(binary):
+    """Convert an 8-bit binary value to a signed decimal integer."""
+    value = int(binary, 2)
+    if value >= 128:
+        value -= 256
+    return value
+
+
+def binary_arithmetic(a, b, operation):
+    # Convert operands to 8-bit 2's complement
+    bin_a = to_8bit_binary(a)
+    bin_b = to_8bit_binary(b)
+
+    print("\nFirst operand :", a, "=", bin_a)
+    print("Second operand:", b, "=", bin_b)
+
+    # Perform the operation
+    if operation == '+':
+        result = a + b
+        bin_result = to_8bit_binary(a)  # Placeholder overwritten below
+        raw_result = (int(bin_a, 2) + int(bin_b, 2)) & 0xFF
+        bin_result = format(raw_result, '08b')
+        overflow = ((a >= 0 and b >= 0 and result > 127) or
+                    (a < 0 and b < 0 and result < -128))
+
+    elif operation == '-':
+        result = a - b
+        # Subtraction is performed by adding the 2's complement
+        neg_b = to_8bit_binary(-b)
+        print("2's complement of second operand:", neg_b)
+        raw_result = (int(bin_a, 2) + int(neg_b, 2)) & 0xFF
+        bin_result = format(raw_result, '08b')
+        overflow = ((a >= 0 and b < 0 and result > 127) or
+                    (a < 0 and b >= 0 and result < -128))
+    else:
+        print("Invalid operation")
+        return
+
+    print("Operation     :", f"{a} {operation} ({b})")
+    print("Binary result :", bin_result)
+    print("Decimal result:", signed_value(bin_result))
+    print("Expected result:", result)
+
+    if overflow:
+        print("Arithmetic overflow: YES")
+    else:
+        print("Arithmetic overflow: NO")
+
+
+# (a) +48 + (+23)
+print("EXPRESSION (a): +48 + (+23)")
+binary_arithmetic(48, 23, '+')
+
+# (b) (-46) - (-29)
+print("\nEXPRESSION (b): (-46) - (-29)")
+binary_arithmetic(-46, -29, '-')

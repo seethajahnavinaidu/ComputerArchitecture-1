@@ -1,0 +1,41 @@
+
+def rotate_right(binary, positions):
+    """Rotate an 8-bit binary number right without carry (ROR)."""
+    value = int(binary, 2)
+    print("Original 8-bit number:", binary)
+
+    for i in range(positions):
+        lsb = value & 1
+        value = (value >> 1) | (lsb << 7)
+        result = format(value, '08b')
+        print(f"After rotation {i + 1}: {result}")
+
+    print("Final ROR result:", format(value, '08b'))
+
+
+def rotate_right_carry(binary, positions, carry):
+    """Rotate right through carry (RCR)."""
+    value = int(binary, 2)
+    print("Original 8-bit number:", binary)
+    print("Initial carry flag:", carry)
+
+    for i in range(positions):
+        lsb = value & 1
+        value = (value >> 1) | (carry << 7)
+        carry = lsb
+        result = format(value, '08b')
+        print(f"After rotation {i + 1}: {result}, Carry = {carry}")
+
+    print("Final RCR result:", format(value, '08b'))
+    print("Final carry flag:", carry)
+
+
+number = "11010101"
+positions = 2
+
+print("PART (a): ROTATE RIGHT WITHOUT CARRY (ROR)")
+rotate_right(number, positions)
+
+print("\nPART (b): ROTATE RIGHT THROUGH CARRY (RCR)")
+initial_carry = 0
+rotate_right_carry(number, positions, initial_carry)
